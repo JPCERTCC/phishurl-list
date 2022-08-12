@@ -1,0 +1,453 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Phishing URL Data Statistic</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.min.css" integrity="sha384-1acln9x8L/qLiaGGA71iWpzCKwZpGAPXErmVAFNPf2k/3GYOsLOZfQ3+0uxxFtM5" crossorigin="anonymous">
+  <style>
+    #chart--wrapper {{
+        max-width: 100%;
+        position: relative;
+        padding-top: 30%;
+        min-height: 300px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-kerning: normal;
+        font-kerning: normal;
+        font-family: "Helvetica Neue","Roboto","ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN","游ゴシック体","Yu Gothic", YuGothic, Verdana, Meiryo, sans-serif !important;
+    }}
+    
+    #chart--wrapper svg {{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }}
+    .axis .domain{{
+        stroke: #ccc;
+        position: relative;
+    }}
+    .axis .tick line{{
+        stroke: #ccc;
+    }}
+
+    #piechart--wrapper {{
+        max-width: 100%;
+        position: relative;
+        padding-top: 30%;
+        min-height: 300px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-kerning: normal;
+        font-kerning: normal;
+        font-family: "Helvetica Neue","Roboto","ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN","游ゴシック体","Yu Gothic", YuGothic, Verdana, Meiryo, sans-serif !important;
+    }}
+    
+    #piechart--wrapper svg {{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }}
+    .axis .domain{{
+        stroke: #ccc;
+        position: relative;
+    }}
+    .axis .tick line{{
+        stroke: #ccc;
+    }}
+
+    .axis .tick text{{
+        fill: #223F4B;
+        font-family: "Helvetica Neue","Roboto","ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN","游ゴシック体","Yu Gothic", YuGothic, Verdana, Meiryo, sans-serif !important;
+        font-size: 0.7rem;
+    }}
+
+    .chart--tooltip {{
+        position: absolute;
+        width: auto;
+        height: auto;
+        padding: 10px 15px;
+        border-radius: 4px;
+        /* color: #fff; */
+        background: rgba(255,255,255,.95);
+        -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        visibility: hidden;
+        font-size: 12px;
+        font-weight: bold;
+        max-width: 160px;
+    }}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://unpkg.com/d3-interpolate-path/build/d3-interpolate-path.min.js"></script>
+</head>
+
+<body>
+  <nav class="navbar navbar-light bg-light shadow">
+    <div class="container-fluid">
+      <span class="navbar-brand ml-3 mb-0">
+        <img
+          src="data:image/png;base64,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"
+          width="270">
+      </span>
+    </div>
+  </nav>
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12 col-md-12 m-3">
+            <div class="text-center"><b>Total number of phishing URLs (per month)</b></div>
+            <div id="chart--wrapper"></div>
+            <div class="text-center mt-3"><b>Top 5 Phishing URL TLDs ({date_1})</b></div>
+            <div id="piechart--wrapper1"></div>
+            <div class="text-center mt-3"><b>Top 5 Phishing URL TLDs ({date_2})</b></div>
+            <div id="piechart--wrapper2"></div>
+            <div class="text-center mt-3"><b>Top 5 Phishing URL TLDs ({date_3})</b></div>
+            <div id="piechart--wrapper3"></div>
+        </div>
+    </div>
+  </div>
+  <script>
+    function writelineChart(){{
+        const contents = d3.select('#chart--wrapper');
+        const svg = contents.append("svg");
+        const tooltip = d3.select("body").append("div").attr("class", "chart--tooltip");
+        
+        const padding = 30;
+        let color = d3.rgb("#85a7cc");
+
+        let dataset = {linedata};
+        let x,y,xScale,yScale,width,height,line,path,area,lineArea,linearGradient,focus,focusLine,focusPoint,overlay;
+        let isAnimate = false;
+        let isInit = false;
+    
+        let timeparser = d3.timeParse("%Y%m");
+        let format = d3.timeFormat("%Y/%m");
+
+        const bisectDate = d3.bisector(function(d) {{ return d.date; }}).left;
+        
+        const lineChart = {{
+            initialize : function(){{
+                dataset = dataset.map(function(d){{
+                    return  {{ date: timeparser(d.date), value:d.value }} ;
+                }});
+                this.rendar();
+                this.update();
+                
+                isInit = true; 
+
+                this.animate();
+                this.resize();
+                this.setTooltip();
+                this.mouseEvent();
+            }},
+            rendar : function(){{
+                path = svg.append("path");
+
+                lineArea = svg.append("path");
+
+                x = svg.append("g")
+                .attr("class", "axis axis-x");
+
+                y = svg.append("g")
+                .attr("class", "axis axis-y");
+
+                focus = svg.append("g")
+                .attr("class", "focus")
+                .style("visibility","hidden")
+                
+                focusLine = focus.append("line");
+
+                focusPoint = focus.append("circle")
+                .attr("r", 4)
+                .attr("fill", "#fff")
+                .attr("stroke", color)
+                .attr("stroke-width",2)
+
+                overlay = svg.append("rect");
+            }},
+            update : function () {{
+                width = contents.node().clientWidth - padding;
+                height = contents.node().clientHeight - padding;
+                this.addScales(false);
+                this.addLine();
+                this.addArea();
+
+            }},
+            resize:function(){{
+                let self = this;
+                window.addEventListener("resize",function () {{
+                    self.update();
+                }})
+            }},
+            getLine: function(){{
+                if(!isInit){{
+                    return d3.line()
+                    .x(function(d) {{ return xScale(d.date); }})
+                    .y(yScale(0))
+                }}else{{
+                    return d3.line()
+                    .x(function(d) {{ return xScale(d.date); }})
+                    .y(function(d) {{ return yScale(d.value); }})
+                }}
+            }},
+            getArea: function(){{
+                if(!isInit){{
+                    return d3.area()
+                    .x(function(d) {{ return xScale(d.date); }})
+                    .y1(yScale(0))
+                    .y0(yScale(0))
+                }}else{{
+                    return d3.area()
+                    .x(function(d) {{ return xScale(d.date); }})
+                    .y1(function(d) {{ return yScale(d.value); }})
+                    .y0(yScale(0))
+                }}
+            }},
+            addScales : function(animation){{
+                let xTicks = (window.innerWidth < 768) ? 6: 12;
+                xScale = d3.scaleTime()
+                .domain([
+                    d3.min(dataset, function(d){{return d.date;}}),
+                    d3.max(dataset, function(d){{return d.date;}})
+                ])
+                .range([padding, width]);
+
+                yScale = d3.scaleLinear()
+                .domain([
+                    0,
+                    d3.max(dataset, function(d){{return d.value;}})
+                ])
+                .range([height, padding]);
+                axisx = d3.axisBottom(xScale)
+                .ticks(xTicks)
+                .tickFormat(format);
+
+                axisy = d3.axisLeft(yScale)
+                .tickFormat(function(d) {{
+                    return d === 0 ? '': (d / 1e3) + "K";
+                }})
+                .ticks(9);
+
+                if(!animation){{
+                    x.attr("transform", "translate(" + 0 + "," + (height) + ")")  
+                    .call(axisx); 
+            
+                    y.attr("transform", "translate(" + padding + "," + 0 + ")")
+                    .call(axisy)
+                }}else{{
+                    x.attr("transform", "translate(" + 0 + "," + (height) + ")")  
+                    .transition()
+                    .duration(1500)
+                    .ease(d3.easeExpInOut)
+                    .call(axisx); 
+
+                    y.attr("transform", "translate(" + padding + "," + 0 + ")")
+                    .transition()
+                    .duration(1500)
+                    .ease(d3.easeExpInOut)
+                    .call(axisy)
+                }}
+            }},
+            addLine :function(){{
+                line = this.getLine();
+                
+                path
+                .datum(dataset)
+                .attr("fill", "none")
+                .attr("stroke", color)
+                .attr("stroke-width", 2)
+
+                .attr("stroke-dashoffset", 0)
+                .attr("stroke-dasharray", 0)
+                .attr("d", line)
+            }},
+            addArea : function(){{
+                
+                area = this.getArea();
+
+                lineArea
+                .datum(dataset)
+                .attr("d",area)
+                .style("fill", "url(#linear-gradient)")
+            }},
+            setTooltip:function(){{
+                overlay
+                .style("fill", "none")
+                .style("pointer-events", "all")
+                .attr("class", "overlay")
+                .attr("width", width)
+                .attr("height", height)
+
+                focusLine
+                .style("stroke","#ccc")
+                .style("stroke-width","1px")
+                .style("stroke-dasharray","2")
+                .attr("class", "x-hover-line hover-line")
+                .attr("y1", padding)
+                .attr("y2",  height)
+            }},
+            mouseEvent:function(){{
+                overlay.on("mousemove",this.handleMouseMove)
+                .on("mouseout",this.handleMouseOut)
+            }},
+            handleMouseMove : function(){{
+                if(!isAnimate){{
+                    let x0 = xScale.invert(d3.mouse(this)[0]),
+                    i = bisectDate(dataset, x0, 1),
+                    d0 = dataset[i - 1],
+                    d1 = dataset[i],
+                    d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+                    let format = d3.timeFormat("%Y/%m");
+
+                    let tooltipY = (d3.event.pageY - 40);
+                    let tooltipX = (d3.event.pageX + 20);
+
+                    if(( window.innerWidth - 160 ) < tooltipX){{
+                        tooltipX = (d3.event.pageX - 200);
+                    }}
+
+                    tooltip
+                    .html("")
+                    .style("visibility", "visible")
+                    .style("top", tooltipY + "px")
+                    .style("left", tooltipX + "px")
+                    
+                    tooltip
+                    .append("div")
+                    .attr("class","tooltip--time")
+                    .html(format(d.date) +'<br>' + d.value)
+
+                    focus
+                    .style("visibility","visible")
+                    .attr("transform", "translate(" + xScale(d.date) + "," + 0 + ")");
+
+                    focusPoint.attr("transform", "translate(" + 0 + "," + yScale(d.value) + ")")
+                }}
+            }},
+            handleMouseOut : function (d, i) {{
+                tooltip.style("visibility", "hidden");
+                focus.style("visibility","hidden");
+            }},
+            animate:function(){{        
+                
+                let self = this;
+                let dLine0 = path.attr("d");
+                let dArea0 = lineArea.attr("d");
+
+                self.addScales(true);
+
+                let dLine1 = self.getLine();
+                let dArea1 = self.getArea();
+
+                isAnimate = true;
+                path
+                .attr("d", dLine0)
+                .transition()
+                .duration(1000)
+                .ease(d3.easeExpInOut)
+                .attrTween('d', function () {{ 
+                    return d3.interpolatePath(dLine0, dLine1(dataset)); 
+                }});
+
+                lineArea.attr("d", dArea0)
+                .transition()
+                .delay(50)
+                .duration(1000)
+                .ease(d3.easeExpInOut)
+                .attrTween('d', function () {{ 
+                    return d3.interpolatePath(dArea0, dArea1(dataset)); 
+                }})
+                .on("end",function () {{
+                    
+                    isAnimate = false;
+                }})
+                
+                self.setTooltip();  
+            }}
+        }};
+
+        lineChart.initialize();
+    }};
+
+    let dataset_1 = {piedata_1};
+    let dataset_2 = {piedata_2};
+    let dataset_3 = {piedata_3};
+
+    function writepieChart(dataset, selectId){{
+        const contents = d3.select(selectId);
+        const padding = 30;
+        const svg = contents.append("svg");
+
+        let color = d3.scaleOrdinal().range(["#85a7cc", "#5585b8", "#3f6a98", "#32557a", "#284462", "#20364e"]);
+
+        let width,height;
+        let isAnimate = false;
+        let isInit = false;
+        
+        const pieChart = {{
+            initialize : function(){{
+                this.rendar();
+                
+                isInit = true; 
+            }},
+            rendar : function(){{
+                width = contents.node().clientWidth - padding;
+                height = 400;
+
+                let radius = Math.min(width, height) / 2 - 10;
+                
+                svg.attr("width", width).attr("height", height);
+                g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+                let pie = d3.pie()
+                .value(function(d) {{ return d.value; }})
+                .sort(null);
+
+                let pieGroup = g.selectAll(".pie")
+                .data(pie(dataset))
+                .enter()
+                .append("g")
+                .attr("class", "pie");
+
+                arc = d3.arc()
+                .outerRadius(radius)
+                .innerRadius(0);
+
+                pieGroup.append("path")
+                .attr("d", arc)
+                .attr("fill", function(d) {{ return color(d.index) }})
+                .attr("opacity", 0.75)
+                .attr("stroke", "white");
+
+                let text = d3.arc()
+                .outerRadius(radius - 30)
+                .innerRadius(radius - 30);
+
+                pieGroup.append("text")
+                .attr("fill", "black")
+                .attr("transform", function(d) {{ return "translate(" + text.centroid(d) + ")"; }})
+                .attr("dy", "5px")
+                .attr("font", "10px")
+                .attr("font-size", "9pt") 
+                .attr("text-anchor", "middle")
+                .text(function(d) {{ return d.data.name + " " + d.data.value; }});
+            }}
+        }};
+
+        pieChart.initialize();
+    }};
+
+    writelineChart();
+    writepieChart(dataset_1, '#piechart--wrapper1');
+    writepieChart(dataset_2, '#piechart--wrapper2');
+    writepieChart(dataset_3, '#piechart--wrapper3');
+  </script>
+</body>
+
+</html>

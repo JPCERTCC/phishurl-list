@@ -1,0 +1,43 @@
+name: Setup statistic page
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+      - '20*/**'
+      - '.github/workflows/count.yml'
+
+jobs:
+
+  check:
+
+    strategy:
+      matrix:
+        python: [3.9]
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Create statistic page
+      run: |
+        python3 statistic.py
+
+    - name: Push statistic page
+      env:
+        GH_MAIL: ${{ secrets.GH_MAIL }}
+        GH_USER: ${{ secrets.GH_USER }}
+      run: |
+        git config --global user.email $GH_MAIL
+        git config --global user.name $GH_USER
+        diff_count=$(echo `git status -s | wc -l`)
+        if [ $diff_count -gt 0 ]; then
+          echo "There are some changes."
+           git add index.html
+           git commit -m "Updated statistic page"
+          git push origin main
+        else
+          echo "No change."
+        fi
