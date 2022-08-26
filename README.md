@@ -2,6 +2,6 @@
 
 ## Column details
 
-* date: Date checked by JPCERT/CC
-* URL: Phishing URL
-* description: Brand information of the phished website
+* date: Date confirmed by JPCERT/CC
+* URL: Entire URL of a phishing site
+* description: Information on a spoofed brand
