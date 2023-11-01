@@ -103,11 +103,11 @@
         <div class="col-sm-12 col-md-12 m-3">
             <div class="text-center"><b>Total number of phishing URLs (per month)</b></div>
             <div id="chart--wrapper"></div>
-            <div class="text-center mt-3"><b>Top 5 Phishing URL TLDs (202306)</b></div>
+            <div class="text-center mt-3"><b>Top 5 Phishing URL TLDs (202309)</b></div>
             <div id="piechart--wrapper1"></div>
-            <div class="text-center mt-3"><b>Top 5 Phishing URL TLDs (202305)</b></div>
+            <div class="text-center mt-3"><b>Top 5 Phishing URL TLDs (202308)</b></div>
             <div id="piechart--wrapper2"></div>
-            <div class="text-center mt-3"><b>Top 5 Phishing URL TLDs (202304)</b></div>
+            <div class="text-center mt-3"><b>Top 5 Phishing URL TLDs (202307)</b></div>
             <div id="piechart--wrapper3"></div>
         </div>
     </div>
@@ -121,7 +121,7 @@
         const padding = 30;
         let color = d3.rgb("#85a7cc");
 
-        let dataset = [{'date': '201901', 'value': 316}, {'date': '201902', 'value': 435}, {'date': '201903', 'value': 589}, {'date': '201904', 'value': 399}, {'date': '201905', 'value': 519}, {'date': '201906', 'value': 459}, {'date': '201907', 'value': 836}, {'date': '201908', 'value': 661}, {'date': '201909', 'value': 568}, {'date': '201910', 'value': 589}, {'date': '201911', 'value': 506}, {'date': '201912', 'value': 582}, {'date': '202001', 'value': 647}, {'date': '202002', 'value': 831}, {'date': '202003', 'value': 1125}, {'date': '202004', 'value': 972}, {'date': '202005', 'value': 726}, {'date': '202006', 'value': 976}, {'date': '202007', 'value': 951}, {'date': '202008', 'value': 1131}, {'date': '202009', 'value': 1193}, {'date': '202010', 'value': 1233}, {'date': '202011', 'value': 894}, {'date': '202012', 'value': 1460}, {'date': '202101', 'value': 1135}, {'date': '202102', 'value': 1059}, {'date': '202103', 'value': 1103}, {'date': '202104', 'value': 1492}, {'date': '202105', 'value': 1587}, {'date': '202106', 'value': 1627}, {'date': '202107', 'value': 1828}, {'date': '202108', 'value': 3569}, {'date': '202109', 'value': 2670}, {'date': '202110', 'value': 3615}, {'date': '202111', 'value': 4282}, {'date': '202112', 'value': 3954}, {'date': '202201', 'value': 3349}, {'date': '202202', 'value': 4800}, {'date': '202203', 'value': 6612}, {'date': '202204', 'value': 5398}, {'date': '202205', 'value': 6152}, {'date': '202206', 'value': 7022}, {'date': '202207', 'value': 7191}, {'date': '202208', 'value': 5337}, {'date': '202209', 'value': 4903}, {'date': '202210', 'value': 5376}, {'date': '202211', 'value': 2416}, {'date': '202212', 'value': 3374}, {'date': '202301', 'value': 2041}, {'date': '202302', 'value': 2271}, {'date': '202303', 'value': 3937}, {'date': '202304', 'value': 4219}, {'date': '202305', 'value': 7251}, {'date': '202306', 'value': 10582}];
+        let dataset = [{'date': '201901', 'value': 316}, {'date': '201902', 'value': 435}, {'date': '201903', 'value': 589}, {'date': '201904', 'value': 399}, {'date': '201905', 'value': 519}, {'date': '201906', 'value': 459}, {'date': '201907', 'value': 836}, {'date': '201908', 'value': 661}, {'date': '201909', 'value': 568}, {'date': '201910', 'value': 589}, {'date': '201911', 'value': 506}, {'date': '201912', 'value': 582}, {'date': '202001', 'value': 647}, {'date': '202002', 'value': 831}, {'date': '202003', 'value': 1125}, {'date': '202004', 'value': 972}, {'date': '202005', 'value': 726}, {'date': '202006', 'value': 976}, {'date': '202007', 'value': 951}, {'date': '202008', 'value': 1131}, {'date': '202009', 'value': 1193}, {'date': '202010', 'value': 1233}, {'date': '202011', 'value': 894}, {'date': '202012', 'value': 1460}, {'date': '202101', 'value': 1135}, {'date': '202102', 'value': 1059}, {'date': '202103', 'value': 1103}, {'date': '202104', 'value': 1492}, {'date': '202105', 'value': 1587}, {'date': '202106', 'value': 1627}, {'date': '202107', 'value': 1828}, {'date': '202108', 'value': 3569}, {'date': '202109', 'value': 2670}, {'date': '202110', 'value': 3615}, {'date': '202111', 'value': 4282}, {'date': '202112', 'value': 3954}, {'date': '202201', 'value': 3349}, {'date': '202202', 'value': 4800}, {'date': '202203', 'value': 6612}, {'date': '202204', 'value': 5398}, {'date': '202205', 'value': 6152}, {'date': '202206', 'value': 7022}, {'date': '202207', 'value': 7191}, {'date': '202208', 'value': 5337}, {'date': '202209', 'value': 4903}, {'date': '202210', 'value': 5376}, {'date': '202211', 'value': 2416}, {'date': '202212', 'value': 3374}, {'date': '202301', 'value': 2041}, {'date': '202302', 'value': 2271}, {'date': '202303', 'value': 3937}, {'date': '202304', 'value': 4219}, {'date': '202305', 'value': 7251}, {'date': '202306', 'value': 10582}, {'date': '202307', 'value': 5483}, {'date': '202308', 'value': 6024}, {'date': '202309', 'value': 4423}];
         let x,y,xScale,yScale,width,height,line,path,area,lineArea,linearGradient,focus,focusLine,focusPoint,overlay;
         let isAnimate = false;
         let isInit = false;
@@ -375,9 +375,9 @@
         lineChart.initialize();
     };
 
-    let dataset_1 = [{'name': 'org', 'value': 2816}, {'name': 'com', 'value': 2498}, {'name': 'cn', 'value': 2012}, {'name': 'cfd', 'value': 1835}, {'name': 'asia', 'value': 219}, {'name': 'other', 'value': 1190}];
-    let dataset_2 = [{'name': 'cn', 'value': 2829}, {'name': 'com', 'value': 1945}, {'name': 'org', 'value': 1104}, {'name': 'asia', 'value': 386}, {'name': 'top', 'value': 166}, {'name': 'other', 'value': 808}];
-    let dataset_3 = [{'name': 'com', 'value': 1812}, {'name': 'dev', 'value': 442}, {'name': 'cn', 'value': 432}, {'name': 'org', 'value': 380}, {'name': 'top', 'value': 317}, {'name': 'other', 'value': 821}];
+    let dataset_1 = [{'name': 'com', 'value': 1804}, {'name': 'cn', 'value': 637}, {'name': 'org', 'value': 472}, {'name': 'cfd', 'value': 388}, {'name': 'one', 'value': 181}, {'name': 'other', 'value': 932}];
+    let dataset_2 = [{'name': 'com', 'value': 2993}, {'name': 'cfd', 'value': 779}, {'name': 'cn', 'value': 644}, {'name': 'icu', 'value': 470}, {'name': 'org', 'value': 446}, {'name': 'other', 'value': 682}];
+    let dataset_3 = [{'name': 'com', 'value': 2068}, {'name': 'cfd', 'value': 1178}, {'name': 'cn', 'value': 1172}, {'name': 'top', 'value': 182}, {'name': 'xyz', 'value': 168}, {'name': 'other', 'value': 704}];
 
     function writepieChart(dataset, selectId){
         const contents = d3.select(selectId);
